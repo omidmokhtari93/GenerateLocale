@@ -61,9 +61,6 @@ ThroughDirectory("./all_files");
 
 paths.forEach((path) => {
   let filePath = Path.join(__dirname, path);
-  console.log(filePath);
-  ``;
-
   FS.readFile(filePath, { encoding: "utf-8" }, function (err, data) {
     let obj = {};
     data
@@ -72,8 +69,7 @@ paths.forEach((path) => {
       .filter((line) =>
         line.split("").some((char) => persianChars.includes(char))
       )
-      .forEach((line) => {
-        console.log(line.split(""));
+      .forEach((line, index, array) => {
         let filteredPersianChars = line
           .split("")
           .filter(
@@ -88,7 +84,17 @@ paths.forEach((path) => {
             .replaceAll(" ", "-")
             .replaceAll("/", "-");
           obj[key] = filteredPersianChars.trim();
-          console.log(obj);
+          if (array.length === Object.keys(obj).length) {
+            let fileName = "";
+            FS.writeFile(
+              "./locales/test_file.json",
+              JSON.stringify(obj),
+              "utf-8",
+              () => {
+                console.log("done");
+              }
+            );
+          }
         });
       });
   });
