@@ -50,20 +50,18 @@ function ThroughDirectory(Directory) {
   });
 }
 
-// Translate("hello", { to: "fa" })
-//   .then((res) => {
-//     console.log(res);
-//   })
-//   .catch((err) => {
-//     console.error(err);
-//   });
-
 ThroughDirectory("./all_files");
 
-console.log(paths);
+let pathCount = 0;
 
-paths.forEach((path) => {
+const generateFileByPath = (path) => {
   let filePath = Path.join(__dirname, path);
+  let fileName = Path.dirname(path)
+    .split("\\")
+    .pop()
+    .match(/[A-Z][a-z]+/g)
+    .map((element) => element.toLowerCase())
+    .join("-");
   FS.readFile(filePath, { encoding: "utf-8" }, function (err, data) {
     let filteredPersianChars = data
       .toString()
@@ -136,12 +134,22 @@ paths.forEach((path) => {
 
     const createFile = (createdJson) =>
       FS.writeFile(
-        "./locales/test_file.json",
+        `./locales/${fileName}.json`,
         JSON.stringify(createdJson),
         "utf-8",
         () => {
           console.log("Json file created.");
+          pathCount++;
+          if (paths && paths.length && paths[pathCount]) {
+            generateFileByPath(paths[pathCount]);
+          }
         }
       );
   });
-});
+};
+
+console.log(paths);
+
+if (paths && paths.length && paths[pathCount]) {
+  generateFileByPath(paths[pathCount]);
+}
