@@ -85,39 +85,63 @@ paths.forEach((path) => {
         return editedLine;
       })
       .map((char) => char.trim())
-      .map(char => {
+      .map((char) => {
         let trimedChar = char;
-        validChars.map(validChar => {
+        validChars.map((validChar) => {
           if (validChar !== 32) {
-            let regex = new RegExp(`^${"\\" + String.fromCharCode(validChar)}+|${"\\" + String.fromCharCode(validChar)}+`, 'g');
-            trimedChar = trimedChar.replace(regex, '');
+            let regex = new RegExp(
+              `^${"\\" + String.fromCharCode(validChar)}+|${
+                "\\" + String.fromCharCode(validChar)
+              }+`,
+              "g"
+            );
+            trimedChar = trimedChar.replace(regex, "");
+          }
+        });
+        return trimedChar.trim();
+      });
+    let obj = {};
+    let counter = 0;
+    const translate = (text) => {
+      console.log(obj);
+      Translate(text, { to: "en" })
+        .then((translated) => {
+          let key = translated
+            .toLowerCase()
+            .trim()
+            .split("")
+            .map((char) =>
+              validChars.includes(char.charCodeAt(0)) ? "-" : char
+            )
+            .join("");
+          if (translated) {
+            if (!obj[key.toString()]) {
+              obj[key.toString()] = text.trim();
+            }
+            counter++;
+            if (filteredPersianChars[counter]) {
+              translate(filteredPersianChars[counter]);
+            } else {
+              createFile(obj);
+            }
           }
         })
-        return trimedChar.trim();
-      })
-    console.log(filteredPersianChars);
-    const translate = () => {
-      Translate(filteredPersianChars, { to: "en" }).then((translated) => {
-        let key = translated
-          .toLowerCase()
-          .trim()
-          .split("")
-          .map((char) => (validChars.includes(char.charCodeAt(0)) ? "-" : char))
-          .join("");
-        obj[key.toString()] = filteredPersianChars.trim();
-
-        console.log(array.length);
-        if (array.length === Object.keys(obj).length) {
-          FS.writeFile(
-            "./locales/test_file.json",
-            JSON.stringify(obj),
-            "utf-8",
-            () => {
-              console.log("done");
-            }
-          );
-        }
-      });
+        .catch((error) => {
+          translate(text);
+        });
     };
+    if (filteredPersianChars[counter]) {
+      translate(filteredPersianChars[counter]);
+    }
+
+    const createFile = (createdJson) =>
+      FS.writeFile(
+        "./locales/test_file.json",
+        JSON.stringify(createdJson),
+        "utf-8",
+        () => {
+          console.log("Json file created.");
+        }
+      );
   });
 });
