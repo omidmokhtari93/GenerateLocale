@@ -39,7 +39,7 @@ javascript: (() => {
     "آ",
   ];
 
-  const startTime = new Date();
+  const startTime = performance.now();
 
   const validChars = [32, 47, 43, 45, 8204];
 
@@ -67,11 +67,10 @@ javascript: (() => {
   ThroughDirectory("./files");
 
   const conversionDuration = () => {
-    const endTime = new Date();
-    const difference = endTime.getTime() - startTime.getTime();
-    const resultInMinutes = Math.ceil(difference / 60000 / 60000);
+    console.log(
+      "\nDone in : " + Math.ceil(performance.now() - startTime) + "ms"
+    );
     clearInterval(interval);
-    console.log("\nProccess completed in : " + resultInMinutes + " second");
   };
 
   let pathCount = 0;
