@@ -65,7 +65,7 @@ let pathCount = 0;
 
 const checkLocaleFileExists = (fileName) => {
   if (FS.existsSync("./locales/" + fileName + ".json")) {
-    console.log(`${fileName}.json already created.`);
+    console.log(`Already created (${fileName}.json)`);
     return true;
   }
   return false;
@@ -86,12 +86,6 @@ const generateFileByPath = (path) => {
     return;
   }
   let filePath = Path.join(__dirname, path);
-  console.log(
-    Path.dirname(path)
-      .split("\\")
-      .pop()
-      .match(/[A-Z][a-z]+/g)
-  );
   let fileName = Path.dirname(path)
     .split("\\")
     .pop()
