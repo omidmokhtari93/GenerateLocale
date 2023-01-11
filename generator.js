@@ -38,6 +38,8 @@ let persianChars = [
   "آ",
 ];
 
+const startTime = new Date();
+
 const validChars = [32, 47, 43, 45, 8204];
 
 let paths = [];
@@ -52,16 +54,54 @@ function ThroughDirectory(Directory) {
 
 ThroughDirectory("./all_files");
 
+const conversionDuration = () => {
+  const endTime = new Date();
+  const difference = endTime.getTime() - startTime.getTime();
+  const resultInMinutes = Math.ceil(difference / 60000 / 60000);
+  console.log("Proccess completed in : " + resultInMinutes + " second");
+};
+
 let pathCount = 0;
 
+const checkLocaleFileExists = (fileName) => {
+  if (FS.existsSync("./locales/" + fileName + ".json")) {
+    console.log(`${fileName}.json already created.`);
+    return true;
+  }
+  return false;
+};
+
+const generetaNewFileByPath = () => {
+  pathCount++;
+  if (paths[pathCount]) {
+    generateFileByPath(paths[pathCount]);
+  } else {
+    conversionDuration(new Date());
+  }
+};
+
 const generateFileByPath = (path) => {
+  if (!path || !path.includes(".tsx")) {
+    generetaNewFileByPath();
+    return;
+  }
   let filePath = Path.join(__dirname, path);
+  console.log(
+    Path.dirname(path)
+      .split("\\")
+      .pop()
+      .match(/[A-Z][a-z]+/g)
+  );
   let fileName = Path.dirname(path)
     .split("\\")
     .pop()
     .match(/[A-Z][a-z]+/g)
     .map((element) => element.toLowerCase())
     .join("-");
+  if (checkLocaleFileExists(fileName)) {
+    generetaNewFileByPath();
+    return;
+  }
   FS.readFile(filePath, { encoding: "utf-8" }, function (err, data) {
     let filteredPersianChars = data
       .toString()
@@ -130,6 +170,8 @@ const generateFileByPath = (path) => {
     };
     if (filteredPersianChars[counter]) {
       translate(filteredPersianChars[counter]);
+    } else {
+      generetaNewFileByPath();
     }
 
     const createFile = (createdJson) =>
@@ -138,18 +180,13 @@ const generateFileByPath = (path) => {
         JSON.stringify(createdJson),
         "utf-8",
         () => {
-          console.log("Json file created.");
-          pathCount++;
-          if (paths && paths.length && paths[pathCount]) {
-            generateFileByPath(paths[pathCount]);
-          }
+          console.log(`${fileName}.json file created.`);
+          generetaNewFileByPath();
         }
       );
   });
 };
 
-console.log(paths);
-
-if (paths && paths.length && paths[pathCount]) {
+if (paths[pathCount]) {
   generateFileByPath(paths[pathCount]);
 }
