@@ -37,6 +37,7 @@ let persianChars = [
   "ی",
   "آ",
 ];
+
 const validChars = [32, 47, 43, 45, 8204];
 
 let paths = [];
@@ -59,18 +60,21 @@ function ThroughDirectory(Directory) {
 
 ThroughDirectory("./all_files");
 
+console.log(paths);
+
 paths.forEach((path) => {
   let filePath = Path.join(__dirname, path);
   FS.readFile(filePath, { encoding: "utf-8" }, function (err, data) {
-    let obj = {};
-    data
+    let filteredPersianChars = data
       .toString()
       .split("\n")
+      .map((char) => char.trim())
       .filter((line) =>
+        //for checking lines includes persian chars
         line.split("").some((char) => persianChars.includes(char))
       )
-      .forEach((line, index, array) => {
-        let filteredPersianChars = line
+      .map((line, index, array) => {
+        let editedLine = line
           .split("")
           .filter(
             (char) =>
@@ -78,24 +82,42 @@ paths.forEach((path) => {
               validChars.includes(char.charCodeAt(0))
           )
           .join("");
-        Translate(filteredPersianChars, { to: "en" }).then((translated) => {
-          let key = translated
-            .toLowerCase()
-            .replaceAll(" ", "-")
-            .replaceAll("/", "-");
-          obj[key] = filteredPersianChars.trim();
-          if (array.length === Object.keys(obj).length) {
-            let fileName = "";
-            FS.writeFile(
-              "./locales/test_file.json",
-              JSON.stringify(obj),
-              "utf-8",
-              () => {
-                console.log("done");
-              }
-            );
+        return editedLine;
+      })
+      .map((char) => char.trim())
+      .map(char => {
+        let trimedChar = char;
+        validChars.map(validChar => {
+          if (validChar !== 32) {
+            let regex = new RegExp(`^${"\\" + String.fromCharCode(validChar)}+|${"\\" + String.fromCharCode(validChar)}+`, 'g');
+            trimedChar = trimedChar.replace(regex, '');
           }
-        });
+        })
+        return trimedChar.trim();
+      })
+    console.log(filteredPersianChars);
+    const translate = () => {
+      Translate(filteredPersianChars, { to: "en" }).then((translated) => {
+        let key = translated
+          .toLowerCase()
+          .trim()
+          .split("")
+          .map((char) => (validChars.includes(char.charCodeAt(0)) ? "-" : char))
+          .join("");
+        obj[key.toString()] = filteredPersianChars.trim();
+
+        console.log(array.length);
+        if (array.length === Object.keys(obj).length) {
+          FS.writeFile(
+            "./locales/test_file.json",
+            JSON.stringify(obj),
+            "utf-8",
+            () => {
+              console.log("done");
+            }
+          );
+        }
       });
+    };
   });
 });
