@@ -68,6 +68,7 @@ javascript: (() => {
     console.log(
       "\nPlease create directory in root of project, then put your files there."
     );
+    clearInterval(interval);
   } else {
     ThroughDirectory("./files");
   }
