@@ -211,8 +211,6 @@ javascript: (() => {
             })
             .join(" ");
         });
-        console.log(enJson);
-        //return;
         FS.writeFile(
           `./locales/${fileName}_fa.json`,
           JSON.stringify(createdJson),
