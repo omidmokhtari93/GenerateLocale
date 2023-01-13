@@ -99,18 +99,20 @@ javascript: (() => {
   };
 
   const generateFileByPath = (path) => {
-    if (!path || !path.includes(".tsx")) {
+    if (!path && (!path.includes(".tsx") || !path.includes(".jsx"))) {
       generetaNewFileByPath();
       return;
     }
     let filePath = Path.join(__dirname, path);
-    let fileName = Path.dirname(path)
-      .split("\\")
-      .pop()
-      .match(/[A-Z][a-z]+/g)
-      .map((element) => element.toLowerCase())
+    let fileName = (
+      Path.dirname(path)
+        .split("\\")
+        .pop()
+        .match(/[A-Z][a-z]+/g) || []
+    )
+      .map((element) => element && element.toLowerCase())
       .join("-");
-    if (checkLocaleFileExists(fileName)) {
+    if (fileName && checkLocaleFileExists(fileName)) {
       generetaNewFileByPath();
       return;
     }
