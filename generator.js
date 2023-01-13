@@ -82,8 +82,8 @@ javascript: (() => {
   let pathCount = 0;
 
   const checkLocaleFileExists = (fileName) => {
-    if (FS.existsSync("./locales/" + fileName + ".json")) {
-      console.log(`\nAlready created (${fileName}.json)`);
+    if (FS.existsSync("./locales/" + fileName + "_fa.json")) {
+      console.log(`\nAlready created (${fileName})`);
       return true;
     }
     return false;
