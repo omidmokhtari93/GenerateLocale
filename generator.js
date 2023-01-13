@@ -64,7 +64,13 @@ javascript: (() => {
     });
   }
 
-  ThroughDirectory("./files");
+  if (!FS.existsSync("./files")) {
+    console.log(
+      "\nPlease create directory in root of project, then put your files there."
+    );
+  } else {
+    ThroughDirectory("./files");
+  }
 
   const conversionDuration = () => {
     console.log(
@@ -118,30 +124,37 @@ javascript: (() => {
           line.split("").some((char) => persianChars.includes(char))
         )
         .map((line, index, array) => {
+          //for filter invalid characters
           let editedLine = line
             .split("")
-            .filter(
-              (char) =>
+            .filter((char) => {
+              return (
                 persianChars.includes(char) ||
                 validChars.includes(char.charCodeAt(0))
-            )
+              );
+            })
             .join("");
           return editedLine;
         })
         .map((char) => char.trim())
         .map((char) => {
           let trimedChar = char;
+          //console.log("invalid char : ", char);
           validChars.map((validChar) => {
-            if (validChar !== 32) {
-              let regex = new RegExp(
-                `^${"\\" + String.fromCharCode(validChar)}+|${
-                  "\\" + String.fromCharCode(validChar)
-                }+`,
-                "g"
-              );
-              trimedChar = trimedChar.replace(regex, "");
+            if (![8204, 32].includes(validChar)) {
+              function trim(s, c) {
+                if (c === "]") c = "\\]";
+                if (c === "^") c = "\\^";
+                if (c === "\\") c = "\\\\";
+                return s.replace(
+                  new RegExp("^[" + c + "]+|[" + c + "]+$", "g"),
+                  ""
+                );
+              }
+              trimedChar = trim(trimedChar, String.fromCharCode(validChar));
             }
           });
+          //console.log("valid char", trimedChar);
           return trimedChar.trim();
         });
       let obj = {};
@@ -183,13 +196,36 @@ javascript: (() => {
         if (!FS.existsSync("./locales")) {
           FS.mkdirSync("./locales");
         }
+        let enJson = {};
+        Object.keys(createdJson).map((key) => {
+          enJson[key] = key
+            .split("-")
+            .map((char, index) => {
+              if (index === 0) {
+                return char
+                  .split("")
+                  .map((word, idx) => (idx === 0 ? word.toUpperCase() : word))
+                  .join("");
+              }
+              return char;
+            })
+            .join(" ");
+        });
+        console.log(enJson);
+        //return;
         FS.writeFile(
-          `./locales/${fileName}.json`,
+          `./locales/${fileName}_fa.json`,
           JSON.stringify(createdJson),
           "utf-8",
           () => {
-            console.log(`\n${fileName}.json file created.`);
-            generetaNewFileByPath();
+            FS.writeFile(
+              `./locales/${fileName}_en.json`,
+              JSON.stringify(enJson),
+              () => {
+                console.log(`\n${fileName}.json file created.`);
+                generetaNewFileByPath();
+              }
+            );
           }
         );
       };
