@@ -1,6 +1,6 @@
-## Getting Started
-
 This package used to generate locale file that contains persian content.
+
+## Getting Started
 
 - Install all dependencies:
 
