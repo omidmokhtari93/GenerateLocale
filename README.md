@@ -2,12 +2,16 @@ This package used to generate locale file that contains persian content.
 
 ## Getting Started
 
-- Install all dependencies:
+- Install it globally using following command:
 
   ```
-  yarn install
+  npm i -g react-locale-generator
   ```
 
-- Create folder in root of project and set it's name to `files`.
-- Put your files (includes directory or etc) in `files` folder.
-- Run it by `yarn start`
+- then use it like bellow in your command line:
+
+  ```
+  generate-locale path/to/your/file
+  ```
+
+- done.

@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 // @ts-check
-
 const fs = require("fs");
 const path = require("path");
 const translate = require("translate-google"); // Using google-translate-api package
@@ -22,9 +21,6 @@ program
         json: {},
       },
     };
-    const outputJsonPathFa = path.join(path.dirname(inputFilePath), "fa.json");
-    const outputJsonPathEn = path.join(path.dirname(inputFilePath), "en.json");
-
     // Function to translate Persian text in a file and generate JSON
     async function translateFileToEnglish() {
       // Function to translate text
