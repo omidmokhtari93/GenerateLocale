@@ -1,15 +1,18 @@
 {
-  "name": "next-locale-generator",
+  "name": "react-locale-generator",
   "version": "1.0.0",
-  "description": "",
+  "description": "A Node.js CLI tool to generate locale for react components and generate JSON.",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node generator.js"
+  "bin": {
+    "gen-locale": "./index.js"
   },
-  "author": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Omid Mokhtari",
   "license": "ISC",
   "dependencies": {
+    "commander": "^10.0.1",
     "translate-google": "^1.5.0"
   }
 }

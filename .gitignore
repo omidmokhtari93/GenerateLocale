@@ -2,4 +2,5 @@
 /files
 /locales
 file.txt
-translations.json
+en.json
+fa.json
