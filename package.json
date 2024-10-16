@@ -4,7 +4,7 @@
   "description": "A Node.js CLI tool to generate locale for react components and generate JSON.",
   "main": "index.js",
   "bin": {
-    "gen-locale": "./index.js"
+    "generate-locale": "./index.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
