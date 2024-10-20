@@ -1,6 +1,6 @@
 This package used to generate locale file that contains persian content.
 
-## Getting Started
+## Installation
 
 - Install it globally using following command:
 
