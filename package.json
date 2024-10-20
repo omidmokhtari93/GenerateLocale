@@ -1,6 +1,6 @@
 {
   "name": "react-locale-generator",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "A Node.js CLI tool to generate locale for react components and generate JSON.",
   "main": "index.js",
   "bin": {
